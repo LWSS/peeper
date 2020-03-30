@@ -1,1 +1,1 @@
-Include Client in your projects to interact with peeper.
+Include peeper.h/peeper.cpp in your projects to interact with peeper.
