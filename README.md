@@ -12,4 +12,4 @@ Requires a few libraries (TODO)
 # Example Screenshots
 ![lg-imgui](https://i.imgur.com/bVX5Kkc.png)
 [TuxKov](https://github.com/Qemu-Gang/Escape-from-TuxKov)
-![tuxkov](https://i.imgur.com/wE1MUCZ.png)
+![tuxkov](https://i.imgur.com/jiT7atn.png)
