@@ -9,5 +9,7 @@ Requires a few libraries (TODO)
 # usage
 `LD_PRELOAD=/home/lwss/Documents/peeper/libpeeper.so ./looking-glass-client -s`
 
-# Example Screenshot
+# Example Screenshots
 ![lg-imgui](https://i.imgur.com/bVX5Kkc.png)
+[TuxKov](https://github.com/Qemu-Gang/Escape-from-TuxKov)
+![tuxkov](https://i.imgur.com/wE1MUCZ.png)
