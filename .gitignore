@@ -1,0 +1,12 @@
+gdb.txt
+*.so
+*.cbp
+CMakeFiles/*
+CMakeFiles/
+cmake-build-*
+.idea/*
+.idea/
+CMakeCache.txt
+.gdb*
+Makefile
+cmake_install.cmake
