@@ -10,3 +10,4 @@ CMakeCache.txt
 .gdb*
 Makefile
 cmake_install.cmake
+tester

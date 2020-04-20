@@ -1,10 +1,14 @@
 #pragma once
-
 #include <cstdint>
 #include <semaphore.h>
+#include "Types.h"
+
+/** Internal Peeper Header, do not include **/
 
 #define SHM_NAME "peeper"
 #define SEMAPHORE_NAME "peeper_semaphore"
+#define MAX_REQUESTS 512
+#define MAX_TEXT_LEN 256
 
 enum DrawType
 {
@@ -16,21 +20,6 @@ enum DrawType
     DRAW_TEXT
 };
 
-struct Color
-{
-    Color (){}
-    Color( unsigned char _r, unsigned char _g, unsigned char _b, unsigned char _a )
-    {
-        r = _r;
-        g = _g;
-        b = _b;
-        a = _a;
-    }
-    unsigned char r;
-    unsigned char g;
-    unsigned char b;
-    unsigned char a;
-};
 struct DrawRequest
 {
     DrawRequest(){}
@@ -40,10 +29,8 @@ struct DrawRequest
     float circleRadius;
     float thickness;
     Color color;
-    char text[256];
+    char text[MAX_TEXT_LEN];
 };
-
-#define MAX_REQUESTS 512
 
 struct Settings
 {

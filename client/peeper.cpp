@@ -1,6 +1,6 @@
 #include "peeper.h"
-
-#include "SharedMem.h"
+// Do not include this file in your project
+#include "../src/SharedMem.h"
 
 #include <sys/mman.h>
 #include <sys/stat.h>        /* For mode constants */
@@ -9,10 +9,20 @@
 #include <cstring> //memcpy
 #include <unistd.h> //ftruncate
 
+// yeah i'm not including <algorithm> just for these
+#define MIN(a,b) (((a)<(b))?(a):(b))
+#define MAX(a,b) (((a)>(b))?(a):(b))
+
+// This is an array index for the DrawRequests[]
 static int currentDrawIndex = 0;
 
+static bool IsRequestBufferFull()
+{
+    return (currentDrawIndex >= (MAX_REQUESTS-1));
+}
+
 bool Peeper::AddLine( int x0, int y0, int x1, int y1, Color color, float thickness ) {
-    if( currentDrawIndex >= (MAX_REQUESTS-1) )
+    if( IsRequestBufferFull() )
         return false;
 
     sharedRegion->requests[currentDrawIndex].type = DRAW_LINE;
@@ -27,8 +37,39 @@ bool Peeper::AddLine( int x0, int y0, int x1, int y1, Color color, float thickne
     return true;
 }
 
+bool Peeper::AddRect( int x0, int y0, int x1, int y1, Color color, float thickness ) {
+    if( IsRequestBufferFull() )
+        return false;
+
+    sharedRegion->requests[currentDrawIndex].type = DRAW_RECT;
+    sharedRegion->requests[currentDrawIndex].x0 = x0;
+    sharedRegion->requests[currentDrawIndex].y0 = y0;
+    sharedRegion->requests[currentDrawIndex].x1 = x1;
+    sharedRegion->requests[currentDrawIndex].y1 = y1;
+    sharedRegion->requests[currentDrawIndex].color = color;
+    sharedRegion->requests[currentDrawIndex].thickness = thickness;
+
+    currentDrawIndex++;
+    return true;
+}
+
+bool Peeper::AddRectFilled( int x0, int y0, int x1, int y1, Color color ) {
+    if( IsRequestBufferFull() )
+        return false;
+
+    sharedRegion->requests[currentDrawIndex].type = DRAW_RECT_FILLED;
+    sharedRegion->requests[currentDrawIndex].x0 = x0;
+    sharedRegion->requests[currentDrawIndex].y0 = y0;
+    sharedRegion->requests[currentDrawIndex].x1 = x1;
+    sharedRegion->requests[currentDrawIndex].y1 = y1;
+    sharedRegion->requests[currentDrawIndex].color = color;
+
+    currentDrawIndex++;
+    return true;
+}
+
 bool Peeper::AddCircle( int x0, int y0, Color color, float circleRadius, int circleSegments, float thickness ) {
-    if( currentDrawIndex >= (MAX_REQUESTS-1) )
+    if( IsRequestBufferFull() )
         return false;
 
     sharedRegion->requests[currentDrawIndex].type = DRAW_CIRCLE;
@@ -43,8 +84,23 @@ bool Peeper::AddCircle( int x0, int y0, Color color, float circleRadius, int cir
     return true;
 }
 
+bool Peeper::AddCircleFilled( int x0, int y0, Color color, float circleRadius, int circleSegments ) {
+    if( IsRequestBufferFull() )
+        return false;
+
+    sharedRegion->requests[currentDrawIndex].type = DRAW_CIRCLE_FILLED;
+    sharedRegion->requests[currentDrawIndex].x0 = x0;
+    sharedRegion->requests[currentDrawIndex].y0 = y0;
+    sharedRegion->requests[currentDrawIndex].color = color;
+    sharedRegion->requests[currentDrawIndex].circleRadius = circleRadius;
+    sharedRegion->requests[currentDrawIndex].circleSegments = circleSegments;
+
+    currentDrawIndex++;
+    return true;
+}
+
 bool Peeper::AddText(int x0, int y0, Color color, const char *text) {
-    if( currentDrawIndex >= (MAX_REQUESTS-1) )
+    if( IsRequestBufferFull() )
         return false;
 
     sharedRegion->requests[currentDrawIndex].type = DRAW_TEXT;
@@ -60,11 +116,11 @@ bool Peeper::AddText(int x0, int y0, Color color, const char *text) {
 
 void Peeper::SubmitDraws( ) {
     if( currentDrawIndex <= 0 ){
-        StopDraws();
+        ClearDraws();
         return;
     }
 
-    sharedRegion->numRequests = currentDrawIndex;
+    sharedRegion->numRequests = MIN(currentDrawIndex, MAX_REQUESTS-1);
 
     // release semaphore to peeper so it can copy drawRequests
     sem_post( semaphore );
@@ -75,7 +131,7 @@ void Peeper::SubmitDraws( ) {
     currentDrawIndex = 0;
 }
 
-void Peeper::StopDraws( ) {
+void Peeper::ClearDraws( ) {
     if( sharedRegion->numRequests != 0 ){
         sharedRegion->numRequests = 0;
         sem_post( semaphore );

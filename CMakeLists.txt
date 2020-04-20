@@ -14,7 +14,7 @@ set(src_main
         ./ext/imgui/imgui_demo.cpp
         ./ext/imgui/imgui_draw.cpp
         ./ext/imgui/examples/libs/gl3w/GL/gl3w.c
-)
+        src/Types.h)
 
 include_directories("${CMAKE_SOURCE_DIR}/ext/imgui/")
 include_directories("${CMAKE_SOURCE_DIR}/ext/imgui/examples/")
@@ -26,6 +26,6 @@ add_library(peeper SHARED ${src_main})
 target_compile_options(peeper PRIVATE -O3 -g -std=c++17 -Wall -ldl -fpic -shared)
 target_link_libraries(peeper SDL2 GL dl EGL glfw rt)
 
-add_executable(tester ./src/Tester.cpp)
+add_executable(tester ./src/Tester.cpp ./client/peeper.cpp)
 target_link_libraries(tester rt pthread)
 
