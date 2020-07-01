@@ -7,7 +7,7 @@
 
 #define SHM_NAME "peeper"
 #define SEMAPHORE_NAME "peeper_semaphore"
-#define MAX_REQUESTS 512
+#define MAX_REQUESTS 2048
 #define MAX_TEXT_LEN 256
 
 enum DrawType
