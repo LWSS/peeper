@@ -1,5 +1,5 @@
 #pragma once
-#include <cstdint>
+#include <stdint.h>
 #include <semaphore.h>
 #include "Types.h"
 
@@ -22,13 +22,15 @@ enum DrawType
 
 struct DrawRequest
 {
+#ifdef __cplusplus
     DrawRequest(){}
-    DrawType type;
+#endif
+    int type;
     int x0, y0, x1, y1;
     int circleSegments;
     float circleRadius;
     float thickness;
-    Color color;
+    struct Color color;
     char text[MAX_TEXT_LEN];
 };
 

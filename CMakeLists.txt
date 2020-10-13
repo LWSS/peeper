@@ -26,6 +26,6 @@ add_library(peeper SHARED ${src_main})
 target_compile_options(peeper PRIVATE -O3 -g -std=c++17 -Wall -ldl -fpic -shared)
 target_link_libraries(peeper SDL2 GL dl EGL glfw rt)
 
-add_executable(tester ./src/Tester.cpp ./client/peeper.cpp)
+add_executable(tester ./src/Tester.cpp client/peeper.c)
 target_link_libraries(tester rt pthread)
 
